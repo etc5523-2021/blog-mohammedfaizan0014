@@ -2,7 +2,7 @@ name: "blog-mohammedfaizan0014"
 title: "ETC5523-Blog1"
 description: |
   ETC5523-Blog1
-output_dir: "_site"
+output_dir: "docs"
 navbar:
   right:
     - text: "Home"
