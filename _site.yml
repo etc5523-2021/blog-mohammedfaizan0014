@@ -2,7 +2,7 @@ name: "ETC5523-Blogs"
 title: "Blog1"
 description: |
   Blog1
-output_dir: "_site"
+output_dir: "docs"
 navbar:
   right:
     - text: "Home"
