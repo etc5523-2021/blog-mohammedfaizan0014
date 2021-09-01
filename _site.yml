@@ -1,8 +1,8 @@
-name: "blog-mohammedfaizan0014"
-title: "ETC5523-Blog1"
+name: "ETC5523-Blogs"
+title: "Blog1"
 description: |
-  ETC5523-Blog1
-output_dir: "docs"
+  Blog1
+output_dir: "_site"
 navbar:
   right:
     - text: "Home"
