@@ -3,17 +3,17 @@
     {
       "path": "about.html",
       "title": "About",
-      "description": "Some additional details about the blog",
+      "description": "Mohammed Faizan |\nMaster of Business Analytics, Monash University.",
       "author": [],
-      "contents": "\n\n\n\n",
-      "last_modified": "2021-09-03T11:56:16+05:30"
+      "contents": "\n\n\n\n.name {\n  font-size: 20px; \n  color: red;\n  align: center;\n}\n\nHello!\n\n\n\nMohammed Faizan\nI am Mohammed Faizan, currently studying Master of Business Analytics at Monash University. I have completed my first semester and I am so excited about this field of statistical theories and data analysis. I am a true believer in the power of mathematics, that is underlying to all of our approaches in analytics.\nBeing ambitious about life motivates me as a person with constant and ingenious efforts. With a high grasping power and acquired knowledge with it, I desire to be placed in challenging tasks. I am a charismatic individual encouraging everyone around to be happy and to grow to their highest potential. Researching, working and applying data analytics for optimising our environment in terms of climate change, energy usage and food security is my imperative objective.\n\n\n\n",
+      "last_modified": "2021-09-03T18:56:27+05:30"
     },
     {
       "path": "index.html",
-      "title": "This website is the work for Communicating with Data to present interesting data stories.",
+      "title": "Communicating with data to present interesting data stories.",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2021-09-03T11:56:16+05:30"
+      "last_modified": "2021-09-03T18:56:28+05:30"
     }
   ],
   "collections": ["posts/posts.json"]
