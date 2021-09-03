@@ -1,5 +1,5 @@
 ---
-title: "Blog1"
+title: "This website is the work for Communicating with Data to present interesting data stories."
 site: distill::distill_website
 listing: posts
 ---

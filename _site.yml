@@ -1,7 +1,7 @@
 name: "ETC5523-Blogs"
-title: "Blog1"
+title: "ETC5523-Blogs"
 description: |
-  Blog1
+  This website is the work for Communicating with Data to present interesting data stories.
 output_dir: "docs"
 navbar:
   right:
