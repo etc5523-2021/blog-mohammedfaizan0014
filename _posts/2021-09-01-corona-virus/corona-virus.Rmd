@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = FALSE,
                       message = FALSE,
                       warning = FALSE)
 
-#options(scipen = 1e06)
+options(scipen = 1e06)
 library(tidyverse) 
 library(plotly)
 library(naniar)
@@ -207,7 +207,7 @@ vaccinations <- iran %>%
  
 ```
 
-The distribution of the reported cases and deaths is presented below, shows that unusual spike in both the cases and deaths are sparse in this country with about 200 days reporting predominantly low number of cases and deaths. The vaccinations data for Iran is not reported well with `r pct_miss(vaccinations)` percentage missing data from the date of first vaccination and `r pct_miss(iran$total_vaccinations)`, and hence, this blog does not cover the vaccination roll out program i Iran.
+The distribution of the reported cases and deaths is presented below, shows that unusual spike in both the cases and deaths are sparse in this country with about 200 days reporting predominantly low number of cases and deaths. The vaccinations data for Iran is not reported well with `r round(pct_miss(vaccinations))` percentage missing data from the date of first vaccination and `r round(pct_miss(iran$total_vaccinations))` percent overall, and hence, this blog does not cover the vaccination roll out program in Iran.
 
 ```{r cases-distribution, message=FALSE,warning=FALSE}
 
