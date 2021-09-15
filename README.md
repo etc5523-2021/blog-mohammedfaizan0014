@@ -10,7 +10,7 @@ This assessment is due Fri Sep 3 2021 11.55PM AEST.
 
 My selected country is [Iran(Islamic Republic of)].
 
-The relevant blog post for this assessment is in [https://etc5523-2021.github.io/blog-mohammedfaizan0014/posts/2021-09-01-corona-virus/].html
+The relevant blog post for this assessment is in [https://etc5523-2021.github.io/blog-mohammedfaizan0014/posts/2021-09-01-corona-virus/]
 
 - [ ] Selected a country
 - [ ] Website with R markdown 
