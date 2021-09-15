@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+  <channel>
+    <title>ETC5523-Blogs</title>
+    <link>https://etc5523-2021.github.io/blog-mohammedfaizan0014/</link>
+    <atom:link href="https://etc5523-2021.github.io/blog-mohammedfaizan0014/index.xml" rel="self" type="application/rss+xml"/>
+    <description>This website is the work for Communicating with Data to present interesting data stories.
+</description>
+    <generator>Distill</generator>
+    <lastBuildDate>Wed, 15 Sep 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Statistics of Corona Virus in Turkey</title>
+      <dc:creator>Mohammed Faizan</dc:creator>
+      <link>https://etc5523-2021.github.io/blog-mohammedfaizan0014/posts/2021-09-15-corona-virus</link>
+      <description>The pandemic has sabotaged life in almost all parts of the world, affecting some countries more than others. The numbers and statistics of the Covid-19 cases, deaths and vaccinations in Turkey discusssed in this blog highlight the general trend and the effects of pandemic mitigation in this country.</description>
+      <guid>https://etc5523-2021.github.io/blog-mohammedfaizan0014/posts/2021-09-15-corona-virus</guid>
+      <pubDate>Wed, 15 Sep 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://etc5523-2021.github.io/blog-mohammedfaizan0014/posts/2021-09-15-corona-virus/distill-preview.png" medium="image" type="image/png" width="1204" height="1202"/>
+    </item>
+    <item>
+      <title>Statistics of Corona Virus in Iran</title>
+      <dc:creator>Mohammed Faizan</dc:creator>
+      <link>https://etc5523-2021.github.io/blog-mohammedfaizan0014/posts/2021-09-01-corona-virus</link>
+      <description>The pandemic has sabotaged life in almost all parts of the world, affecting some countries more than others. The numbers and statistics of the Covid-19 cases, deaths and vaccinations in Iran discusssed in this blog highlight the general trend and the effects of pandemic mitigation in this country.</description>
+      <guid>https://etc5523-2021.github.io/blog-mohammedfaizan0014/posts/2021-09-01-corona-virus</guid>
+      <pubDate>Fri, 03 Sep 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://etc5523-2021.github.io/blog-mohammedfaizan0014/posts/2021-09-01-corona-virus/distill-preview.png" medium="image" type="image/png" width="1204" height="1202"/>
+    </item>
+  </channel>
+</rss>

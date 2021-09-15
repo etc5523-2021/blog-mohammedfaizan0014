@@ -1,7 +1,7 @@
 ---
 title: "Statistics of Corona Virus in Turkey"
 description: |
-  The pandemic has sabotaged life in almost all parts of the world, affecting some countries more than others. The numbers and statistics of the Covid-19 cases, deaths and vaccinations in Iran discusssed in this blog highlight the general trend and the effects of pandemic mitigation in this country.
+  The pandemic has sabotaged life in almost all parts of the world, affecting some countries more than others. The numbers and statistics of the Covid-19 cases, deaths and vaccinations in Turkey discusssed in this blog highlight the general trend and the effects of pandemic mitigation in this country.
 author:
   - name: Mohammed Faizan
     url: https://etc5523-2021.github.io/blog-mohammedfaizan0014
@@ -73,7 +73,7 @@ library(patchwork)
 
 ```{r load-data}
 coviddata <- readr::read_csv('https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv')
-iran <- coviddata  %>% 
+country<- coviddata  %>% 
   filter(location=="Turkey") %>% 
   mutate(year=year(date),
          month=month(date),
@@ -85,13 +85,13 @@ iran <- coviddata  %>%
 ```{r clean-data}
 
 
-missing_variables <- miss_var_summary(iran) %>%
+missing_variables <- miss_var_summary(country) %>%
   filter(pct_miss==100) %>% pull(variable)
 
 
-iran1 <- iran %>% select(-c(all_of(missing_variables))) 
+country1 <- country %>% select(-c(all_of(missing_variables))) 
 
-iran_info <- iran1 %>% select(37:51)  %>%
+country_info <- country1 %>% select(39:53)  %>%
  pivot_longer(cols = -year,
                names_to = "Information",
                values_to = "value") %>% 
@@ -99,18 +99,18 @@ iran_info <- iran1 %>% select(37:51)  %>%
   pivot_wider(names_from = year,
               values_from = value)
 
-iran_info <- iran_info %>% 
+country_info <- country_info %>% 
   mutate(`2020`=round(`2020`,2),
                     `2021`=round(`2021`,2)) 
 
 
 
-info_variables <- iran_info %>% pull(Information)
-iran2 <- iran1 %>% 
+info_variables <- country_info %>% pull(Information)
+country2 <- country1 %>% 
   select(-c(all_of(info_variables))) %>% 
   select(-c(contains("smoothed")))
 
-iran3 <- iran2 %>%
+country3 <- country2 %>%
  pivot_longer(
    ends_with(c("_cases","_deaths","_tests","_vaccinations")),
                names_to = c("total_new", ".value"),
@@ -129,7 +129,7 @@ iran3 <- iran2 %>%
      "(total|new)_(tests_per_thousand)") %>%
     filter(total_new == total_new_per_thousand) 
 
-iran4 <- iran3 %>% 
+country4 <- country3 %>% 
   rename(	
     "people_first_vaccinated"=people_vaccinated,
     "people_first_vaccinated_per_hundred"=people_vaccinated_per_hundred,
@@ -146,24 +146,28 @@ iran4 <- iran3 %>%
      "people_(first|fully)_(vaccinated_per_hundred)") %>% 
   filter(first_fully == first_fully_per) %>% 
   select(-c(total_new_per,total_new_per_thousand,first_fully_per,tests_units)) %>% 
-  rename("total_vaccinations_per_hundred"=per_hundred_total_vaccinations)
+  rename("total_vaccinations_per_hundred"=per_hundred_total_vaccinations) %>% 
+  mutate(row_number=row_number())  %>% 
+  filter(row_number %% 4==0|row_number %% 4==1)
 
-miss_summary <- miss_var_summary(iran4)
+
+
+miss_summary <- miss_var_summary(country4)
 ```
 
 
 
-Iran formally called Iran(Islamic Republic of) is a great country with a diverse, rich and egalitarian cultural heritage dwelled with some of the most humble people on this planet. They welcome people and their hospitality is one of its kind; treating guests with atmost dignity is their specialty. However, these people face many hardships due to the ongoing political sanctions which makes life difficult here. From experience, I say that most of the general services are unavailble here, including access to allopathy medications and common commodities. It is extremely difficult to access Iranian data, kudos to Johns Hopkins University for articulating the pandemic data of Iran. General information is provided in the table below.
+Iran formally called Iran(Islamic Republic of) is a great country with a diverse, rich and egalitarian cultural heritage dwelled with some of the most humble people on this planet. They welcome people and their hospitality is one of its kind; treating guests with at most dignity is their specialty. However, these people face many hardships due to the ongoing political sanctions which makes life difficult here. From experience, I say that most of the general services are unavailable here, including access to allopathy medications and common commodities. It is extremely difficult to access Iranian data, kudos to Johns Hopkins University for articulating the pandemic data of Iran. General information is provided in the table below.
 
 ```{r}
-iran_info %>%
+country_info %>%
   mutate(`2020`=scales::comma(as.numeric(`2020`)),
          `2021`=scales::comma(as.numeric(`2021`))) %>%  
      #formattable(list(area(col = 2:3) ~ color_tile("#CD5C5C", "#3CB371"))) %>% 
   gt() %>% 
-  tab_header(title = "Summary Numbers of Iran",
-             subtitle = "ABC") %>% 
-  tab_source_note(md("Source: 1974 *Motor Trend* US magazine")) %>% 
+  tab_header(title = "Summary Numbers of Turkey",
+             subtitle = "") %>% 
+  tab_source_note(md("")) %>% 
   cols_align(
   align = c("right"),
   columns = c(`2020`,`2021`)
@@ -187,38 +191,38 @@ include_graphics(here::here("figures/coronairan.png"))
 
 ### Overview of the Covid data {#overviewbarstool}
 
-The Covid-19 data for this blog post is the contribution of [Our World in Data](https://ourworldindata.org/coronavirus/) who update their GitHub repository everyday with covid data from the Johns Hopkins University Center for Systems Science and Engineering (JHU CSSE). The data is a representation of the time series data where every record is a day of the year and represents the statistics of the corona virus cases, deaths and vaccinations, both fresh and cumulative. Additional, country specific statistics are also present in the data and  has **`r ncol(iran)`** variables for **`r nrow(iran)`** days beginning from from `r min(iran$date)`.
+The Covid-19 data for this blog post is the contribution of [Our World in Data](https://ourworldindata.org/coronavirus/) who update their GitHub repository everyday with covid data from the Johns Hopkins University Center for Systems Science and Engineering (JHU CSSE). The data is a representation of the time series data where every record is a day of the year and represents the statistics of the corona virus cases, deaths and vaccinations, both fresh and cumulative. Additional, country specific statistics are also present in the data and  has **`r ncol(country)`** variables for **`r nrow(country)`** days beginning from from `r min(country$date)`.
 
 ### Unique Values of each varibale in the data set are displayed below:
 
-- **Year**: `r unique(iran$year)`
+- **Year**: `r unique(country$year)`
 
 - **Summary of Cases**: 
-    - Minimum Cases: `r min(iran$new_cases)`
-    - Median Cases:  `r median(iran$new_cases)`
-    - Maximum Cases: `r max(iran$new_cases)`
+    - Minimum Cases: `r min(country$new_cases)`
+    - Median Cases:  `r median(country$new_cases)`
+    - Maximum Cases: `r max(country$new_cases)`
     
 ### Cases Distribution
 
 ```{r}
-vaccinations <- iran %>% 
-  select(date,total_vaccinations,new_vaccinations,people_vaccinated,people_fully_vaccinated) %>% 
-  filter(date>"2021-02-08") 
+vaccinations <- country4 %>% filter(date>"2021-02-12")
+
+vis_miss(vaccinations)
  
 ```
 
-The distribution of the reported cases and deaths is presented below, shows that unusual spike in both the cases and deaths are sparse in this country with about 200 days reporting predominantly low number of cases and deaths. The vaccinations data for Iran is not reported well with `r round(pct_miss(vaccinations))` percentage missing data from the date of first vaccination and `r round(pct_miss(iran$total_vaccinations))` percent overall, and hence, this blog does not cover the vaccination roll out program in Iran.
+The distribution of the reported cases and deaths is presented below, shows that unusual spike in both the cases and deaths are sparse in this country with about 200 days reporting predominantly low number of cases and deaths. The vaccinations data for Iran is not reported well with `r round(pct_miss(vaccinations))` percentage missing data from the date of first vaccination and `r round(pct_miss(country$total_vaccinations))` percent overall, and hence, this blog does not cover the vaccination roll out program in Iran.
 
 ```{r cases-distribution, message=FALSE,warning=FALSE}
 
 
-d1 <- iran %>% 
+d1 <- country %>% 
   #group_by(Cause) %>% 
   ggplot() +
   geom_histogram(mapping = aes(x = new_cases,label=month)) +
   labs(title = "Case Distribution in Covid Data", x = "Cases", y = "Number of Days")
 
-d2 <- iran %>% 
+d2 <- country %>% 
   #group_by(Cause) %>% 
   ggplot() +
   geom_histogram(mapping = aes(x = new_deaths,label=month)) +
@@ -258,11 +262,11 @@ The time series graphs below represent the number of fresh cases and deaths in I
 
 ```{r new_cases}
 
-iran %>% 
+country %>% 
   select(new_cases,new_deaths,date) %>% 
   # ggplot() +
   # geom_line(aes(x=date,y=new_cases))
-  xts(order.by=iran$date) %>% 
+  xts(order.by=country$date) %>% 
   dygraph( main = "New Cases and Deaths by Covid-19", xlab = NULL, ylab = NULL, periodicity = NULL,
   group = NULL, elementId = NULL, width = NULL, height = NULL)%>% 
   dyLegend(show = "always", hideOnMouseOut = FALSE)%>%
@@ -280,9 +284,9 @@ In the early days, the ratio between the cases and the deaths was wide, however 
 
 
 ```{r total_cases}
- iran %>% 
+ country %>% 
   select(total_cases,total_deaths) %>% 
-  xts(order.by=iran$date)  %>% 
+  xts(order.by=country$date)  %>% 
   dygraph( main = "Cumulative Cases and Deaths by Covid-19", xlab = NULL, ylab = NULL, periodicity = NULL,
   group = NULL, elementId = NULL, width = NULL, height = NULL)%>% 
   dyLegend(show = "always", hideOnMouseOut = FALSE)%>%
@@ -292,11 +296,40 @@ In the early days, the ratio between the cases and the deaths was wide, however 
 
 ```
 
+```{r}
+country_vaccination <- country2 %>% 
+  mutate(first_vaccine=people_vaccinated-lag(people_vaccinated),
+         second_vaccine=people_fully_vaccinated-lag(people_fully_vaccinated))
+
+country_vaccination %>% 
+  select(first_vaccine,second_vaccine ) %>% 
+  xts(order.by=country_vaccination$date)  %>% 
+  dygraph( main = "Vaccination", xlab = NULL, ylab = NULL, periodicity = NULL,
+  group = NULL, elementId = NULL, width = NULL, height = NULL)%>% 
+  dyLegend(show = "always", hideOnMouseOut = FALSE)%>%
+  dyAxis("y", label = "Number") %>%
+  dyOptions(axisLineWidth = 1.5, fillGraph = FALSE, drawGrid = FALSE) %>% 
+  dyRangeSelector()
+```
+```{r}
+country_vaccination %>% 
+  select(people_vaccinated,people_fully_vaccinated,total_vaccinations ) %>% 
+  xts(order.by=country_vaccination$date)  %>% 
+  dygraph( main = "Vaccination", xlab = NULL, ylab = NULL, periodicity = NULL,
+  group = NULL, elementId = NULL, width = NULL, height = NULL)%>% 
+  dyLegend(show = "always", hideOnMouseOut = FALSE)%>%
+  dyAxis("y", label = "Number") %>%
+  dyOptions(axisLineWidth = 1.5, fillGraph = FALSE, drawGrid = FALSE) %>% 
+  dyRangeSelector()
+```
+
+
+
 
 The interactive table below shows the exact number of cases and deaths in each month and the trend within each month. The highest number of cases recorded in August 2021 are highlighted in red.
 
 ```{r}
-iran %>% 
+country %>% 
   group_by(year, month) %>%
   summarise("Total Cases" = round(sum(new_cases, na.rm = TRUE)),
             "Cases in a month" = spk_chr(new_cases, type ="line"),
@@ -336,7 +369,7 @@ monthlyreport <- coviddata %>%
   ungroup() %>% 
   group_by(location) %>% 
   slice_max(order_by=MonthlyCases,n=5) %>% 
-  filter(location %in% c("United States", "India", "Brazil","United Kingdom","Iran")) %>%
+  filter(location %in% c("United States", "India", "Brazil","United Kingdom","Turkey")) %>%
   arrange(desc(ratio))%>%  
   datatable(rownames =TRUE, escape = FALSE, 
             caption = htmltools::tags$caption( style = 'caption-side: top; 
@@ -366,7 +399,7 @@ coviddata %>%
   summarise("MonthlyCases" = sum(new_cases, na.rm = TRUE),
             "MonthlyDeaths" = sum(new_deaths, na.rm = TRUE),
                                     ratio=MonthlyDeaths/MonthlyCases) %>%  
-    filter(location %in% c("Iran")),
+    filter(location %in% c("Turkey")),
              aes(x=MonthlyCases,y=MonthlyDeaths),color="red") +
   labs(title = "Cases vs Deaths")
 
