@@ -10,8 +10,6 @@ navbar:
   right:
     - text: "Home"
       href: index.html
-    - text: "Blog 1"
-      href: posts/2021-09-01-blog1/index.html
     - text: "About"
       href: about.html
   source_url: https://github.com/etc5523-2021/blog-mohammedfaizan0014

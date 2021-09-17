@@ -1,7 +1,7 @@
 ---
 title: "Statistics of Corona Virus in Turkey"
 description: |
-  The pandemic has sabotaged life in almost all parts of the world, affecting some countries more than others. The numbers and statistics of the Covid-19 cases, deaths and vaccinations in Turkey discusssed in this blog highlight the general trend and the effects of pandemic mitigation in this country.
+  As the world mitigates the pandemic, countries are in a dillemma to open to international market or even ease domestic restrictions. Most countries have strict rules and are closed to high risk countries. Perhaps the indicatior for this risk is the pandemic level and  the delta corona virus variant, which has spread rapidly and caused fears among us all. However, the vaccination rates have caused this delta variant to slow down in most countries, if not all. This blog discusses the pandemic and the Delta strain in Turkey.
 author:
   - name: Mohammed Faizan
     url: https://etc5523-2021.github.io/blog-mohammedfaizan0014
@@ -69,15 +69,36 @@ library(formattable)
 library(RColorBrewer)
 library(lubridate)
 library(patchwork)
+library(vembedr)
+library(gganimate)
+
 ```
 
 ```{r load-data}
 coviddata <- readr::read_csv('https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv')
+
 country<- coviddata  %>% 
   filter(location=="Turkey") %>% 
   mutate(year=year(date),
          month=month(date),
          day=day(date)) 
+
+codebook <- readr::read_csv('https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-codebook.csv')
+
+variant <- readr::read_csv('https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/variants/covid-variants.csv')
+
+variant_country <- variant %>% filter(location=="Turkey")
+
+vaccination_country <- readr::read_csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/country_data/Turkey.csv")
+
+tests_country <-  readr::read_csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/testing/covid-testing-all-observations.csv") %>% filter(Entity=="Turkey - tests performed")
+
+jhk <- readr::read_csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/jhu/COVID-19%20-%20Johns%20Hopkins%20University.csv")
+
+jhk_country <- jhk %>% filter(Country=="Turkey")
+
+
+
 
 #each observation is a day
 ```
@@ -155,35 +176,43 @@ country4 <- country3 %>%
 miss_summary <- miss_var_summary(country4)
 ```
 
+Turkey is undoubtedly a great country and ranks among the top tourist destinations in the world and known for its historical sites and beach side resorts along the Mediterranean coast. Turkey's largest city, Istanbul has a number of major attractions derived from its historical status as capital of the Byzantine and Ottoman Empires. The recent pandemic and the travel restrictions including the quarantine requirements have affected the tourism and arrivals in Turkey.The video below has information about its plan to revive tourism.
 
-
-Iran formally called Iran(Islamic Republic of) is a great country with a diverse, rich and egalitarian cultural heritage dwelled with some of the most humble people on this planet. They welcome people and their hospitality is one of its kind; treating guests with at most dignity is their specialty. However, these people face many hardships due to the ongoing political sanctions which makes life difficult here. From experience, I say that most of the general services are unavailable here, including access to allopathy medications and common commodities. It is extremely difficult to access Iranian data, kudos to Johns Hopkins University for articulating the pandemic data of Iran. General information is provided in the table below.
+```{r planvideo, fig.cap="Turkey unveils plan to revive tourism | Turkey Coronavirus | World News"}
+embed_youtube(
+  "3yHV4F7Ss7A",
+  width = NULL,
+  height = 400,
+  ratio = c("16by9", "4by3"),
+  frameborder = 0,
+  allowfullscreen = TRUE,
+  query = NULL
+)
+```
 
 ```{r}
 country_info %>%
   mutate(`2020`=scales::comma(as.numeric(`2020`)),
          `2021`=scales::comma(as.numeric(`2021`))) %>%  
-     #formattable(list(area(col = 2:3) ~ color_tile("#CD5C5C", "#3CB371"))) %>% 
-  gt() %>% 
-  tab_header(title = "Summary Numbers of Turkey",
-             subtitle = "") %>% 
-  tab_source_note(md("")) %>% 
-  cols_align(
-  align = c("right"),
-  columns = c(`2020`,`2021`)
-) 
-  # cols_label(
-  #   wt = html("Information<br>(1000lbs)"),
-  #   disp = html("Displacement<br> (inch<sup>3</sup>)"),
-  #   cyl = html("Number of<br>cylinders")
-  # )
+#      #formattable(list(area(col = 2:3) ~ color_tile("#CD5C5C", "#3CB371"))) %>% 
+#   gt() %>% 
+#   tab_header(title = "Summary Numbers of Turkey",
+#              subtitle = "") %>% 
+#   tab_source_note(md("")) %>% 
+#   cols_align(
+#   align = c("right"),
+#   columns = c(`2020`,`2021`)
+# ) %>% 
+  datatable(options = list(pageLength = 5,
+                            columnDefs = list(list(className = 'dt-left', targets = 1:3))),
+            colnames = c("Criteria", "Numbers in 2020", "Numbers in 2021"),
+            caption = "Country Information: Turkey")
 ```
 
 
-In the recent times, and currently, Iran is facing a new wave of the corona virus, witnessing spike in the number of cases and deaths. There have been pleas from the locals for helping Iran face this pandemic with better access to health care and emergency supplies. 
 
-```{r}
-include_graphics(here::here("figures/coronairan.png"))
+```{r ,eval=TRUE}
+include_graphics(here::here("figures/turkey.png"))
 ```
 
 
@@ -193,27 +222,22 @@ include_graphics(here::here("figures/coronairan.png"))
 
 The Covid-19 data for this blog post is the contribution of [Our World in Data](https://ourworldindata.org/coronavirus/) who update their GitHub repository everyday with covid data from the Johns Hopkins University Center for Systems Science and Engineering (JHU CSSE). The data is a representation of the time series data where every record is a day of the year and represents the statistics of the corona virus cases, deaths and vaccinations, both fresh and cumulative. Additional, country specific statistics are also present in the data and  has **`r ncol(country)`** variables for **`r nrow(country)`** days beginning from from `r min(country$date)`.
 
-### Unique Values of each varibale in the data set are displayed below:
-
-- **Year**: `r unique(country$year)`
-
-- **Summary of Cases**: 
-    - Minimum Cases: `r min(country$new_cases)`
-    - Median Cases:  `r median(country$new_cases)`
-    - Maximum Cases: `r max(country$new_cases)`
-    
-### Cases Distribution
-
 ```{r}
-vaccinations <- country4 %>% filter(date>"2021-02-12")
-
-vis_miss(vaccinations)
- 
+codebook %>% 
+  datatable(options = list(pageLength = 5,
+                            columnDefs = list(list(className = 'dt-left', targets = 1:3))),
+            colnames = c("Variable", "Original Question / Description", "Value Labels"),
+            caption = "Data Dictionary")
 ```
 
-The distribution of the reported cases and deaths is presented below, shows that unusual spike in both the cases and deaths are sparse in this country with about 200 days reporting predominantly low number of cases and deaths. The vaccinations data for Iran is not reported well with `r round(pct_miss(vaccinations))` percentage missing data from the date of first vaccination and `r round(pct_miss(country$total_vaccinations))` percent overall, and hence, this blog does not cover the vaccination roll out program in Iran.
 
-```{r cases-distribution, message=FALSE,warning=FALSE}
+
+
+
+
+
+
+```{r cases-distribution, message=FALSE,warning=FALSE, eval=FALSE}
 
 
 d1 <- country %>% 
@@ -232,33 +256,13 @@ d1+d2+plot_layout(ncol=2,heights = c(4,4),widths = c(8,8))
 ```
 
 
-```{r , eval=FALSE}
- miss_var_summary(vaccinations) %>% mutate(pct_miss=round(pct_miss,2))
-```
 
-
-
-
-
-
-
-
-```{r deaths-cause, eval=FALSE}
-temp <- iran%>%group_by(month,year)%>%
-  summarise(n_cases=sum(new_cases),
-            n_deaths = sum(new_deaths),
-            n_vaccinated=sum(new_vaccinations,na.rm = TRUE)) %>% 
-  arrange(year,month)
-
-temp %>% view()
-death_cause <- knitr::kable(temp, caption = "Deaths by cause over all years, ages, sex")
-death_cause
-
-```
 
 # Analysis and findings
 
-The time series graphs below represent the number of fresh cases and deaths in Iran over the period of the recorded data from February, 2020. You can hover over the plot to see the exact number. We see that there has been rise and fall in the numbers, having five peaks separated by uniform time intervals, except in February and March of 2021 when the numbers were low. Slide across to August, 2021. The current peak in the number of positive cases and deaths has affected Iran and the country had to undergo a 6 day lockdown from the 16th of August at the time Muharram, the major religious time in Iran. We can see te lowering in the number of reported cases an deaths, however these have been increasing after lockdown ended.
+
+The time series graphs below represent the number of fresh cases and deaths in Turkey over the period of the recorded data from February, 2020. You can hover over the plot to see the exact number. The cases and the deaths due to corona virus have been rising and falling in a regular manner. The peaks were in December 2019 and April 2021 when the cases rose to substantial levels. The pandemic levels are on the rise now.
+
 
 ```{r new_cases}
 
@@ -280,7 +284,7 @@ country %>%
 ```
 
 
-In the early days, the ratio between the cases and the deaths was wide, however it has come closer in these recent times. This is the general trend in populous countries where there are more deaths when cases are on the peak, owing to lack of access to emergency healthcare services. 
+In the early days, the ratio between the cases and the deaths was wide, however it has come closer in these recent times. This is the general trend in populous countries where there are more deaths when cases are on the peak, owing to lack of access to emergency health care services. 
 
 
 ```{r total_cases}
@@ -296,6 +300,10 @@ In the early days, the ratio between the cases and the deaths was wide, however 
 
 ```
 
+### Vaccination
+
+The vaccination roll out plan in Turkey began in the February 2021 with the approved vaccines `r knitr::combine_words(unique(vaccination_country$vaccine))` being made available for the people. It is can be observed that the race between the first vaccine and second vaccine is predominant, where the first and second dose lead alternatively. For example, in June 2021 the first vaccinations are higher than the second vaccinations and in the following months, the second vaccinations lead. This suggests that the groups of people take the vaccination. For example, if a group of people take their first vaccine in February 2021, the same group take their second vaccine in March, 2021. This suugests the hesitancy of people to take up the vaccine. Ideally, the number of first doses must be more than the second doses until atleast half the population is vaccinated with their first dose.
+
 ```{r}
 country_vaccination <- country2 %>% 
   mutate(first_vaccine=people_vaccinated-lag(people_vaccinated),
@@ -309,9 +317,12 @@ country_vaccination %>%
   dyLegend(show = "always", hideOnMouseOut = FALSE)%>%
   dyAxis("y", label = "Number") %>%
   dyOptions(axisLineWidth = 1.5, fillGraph = FALSE, drawGrid = FALSE) %>% 
-  dyRangeSelector()
+  dyRangeSelector(dateWindow = c("2021-01-14","2021-09-15"))
 ```
-```{r}
+
+In June 2021, we see a wider gap between the first and second dose which describes the acceptance of the vaccine by the people and the total vaccinations also becomes steeper from this point. 
+
+```{r , eval=FALSE}
 country_vaccination %>% 
   select(people_vaccinated,people_fully_vaccinated,total_vaccinations ) %>% 
   xts(order.by=country_vaccination$date)  %>% 
@@ -323,24 +334,95 @@ country_vaccination %>%
   dyRangeSelector()
 ```
 
+```{r , layout="l-body-outset", fig.height = 5, fig.cap="Cumulative Vacination"}
+plot3 <- country_vaccination %>% 
+  rename("Fully Vaccinated" = people_fully_vaccinated,
+         "First Dose" = people_vaccinated) %>% 
+  pivot_longer(cols = c("First Dose", 
+                        "Fully Vaccinated"),
+               names_to = "dose",
+               values_to = "entries") %>% 
+  ggplot(aes(x = date,
+             y = entries,
+             group = dose,
+             fill = dose)) +
+  geom_area(alpha = 0.8, size = 0.5, colour = "white") +
+  scale_x_date(date_breaks = "1 month") +
+  scale_y_continuous(labels = scales::comma) +
+  scale_fill_manual(values = c("#66c2a5", "#fc8d62")) +
+  theme_light() +
+  labs(x = "Date",
+       y = "Number of Doses Administered",
+       title = "Cumulative Vaccination Trend",
+       fill = "Dose",
+       caption = "") +
+  theme(plot.caption.position = "panel",
+        plot.caption = element_text(hjust = 0),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        axis.text.y = element_text(size = 8),
+        panel.background = element_rect(fill = '#fffbf0'),
+        plot.background = element_rect(fill="#fffbf0"),
+        legend.background = element_rect(fill="#fffbf0"))
+ggplotly(plot3) %>% 
+       layout(title = list(text = paste0("Cumulative Vaccines Administered",
+                                    "<br>",
+                                    "<sup>",
+                                    "Year: Jan 2021 - Sep 2021, source: Turkish Ministry of Health",
+                                    "</sup>")))
+```
 
+
+> The vaccination percentage of the total population of Turkey for the first and second doze is shown in the animated plot below. The current vaccination percentage stands at 61.52% for first doze and 48.72% for the second doze.
+
+```{r}
+country_vaccination1 <- country_vaccination %>% mutate(population=country_info$`2020`[1]) %>% filter(date>"2021-01-12")
+
+country_vaccination1_month <- country_vaccination1 %>%
+  mutate(people_vaccinated=ifelse(is.na(people_vaccinated),0,people_vaccinated),
+         people_fully_vaccinated=ifelse(is.na(people_fully_vaccinated),0,people_fully_vaccinated)) %>% 
+  mutate(perc_first_doze=round(people_vaccinated/population,4)*100,
+         perc_second_doze=round(people_fully_vaccinated/population,4)*100) %>% 
+  filter(year==2021) %>% 
+  group_by(month) %>% 
+  slice_max(day) %>% 
+  mutate(perc_first_doze_cum=cumsum(perc_first_doze),
+         perc_second_doze_cum=cumsum(perc_second_doze)) %>% 
+  mutate(perc_population=100) %>% 
+  pivot_longer(
+           cols =c(perc_first_doze_cum,perc_second_doze_cum,perc_population),
+           names_to = "doze",
+           values_to = "percentage") %>% 
+  mutate(percentage=round(percentage,2))
+
+plotanim <- country_vaccination1_month %>% 
+  ggplot(mapping = aes(x=reorder(doze,percentage),y=percentage,fill=doze)) +
+  geom_col() +
+  transition_time(month) +
+  coord_flip() +
+   geom_text(aes(label = round(percentage,2)), label.size = 10,color="white") +
+  theme(axis.title.y = element_blank())
+animate(plotanim, width = 600, height = 600, 
+        nframes=28, fps = 2)
+```
 
 
 The interactive table below shows the exact number of cases and deaths in each month and the trend within each month. The highest number of cases recorded in August 2021 are highlighted in red.
 
-```{r}
+```{r }
 country %>% 
   group_by(year, month) %>%
   summarise("Total Cases" = round(sum(new_cases, na.rm = TRUE)),
             "Cases in a month" = spk_chr(new_cases, type ="line"),
             "New Deaths" = round(sum(new_deaths,na.rm = TRUE)),
-            "Deaths in a month" = spk_chr(new_deaths, type ="line"),)%>%
+            "Deaths in a month" = spk_chr(new_deaths, type ="line"),
+            "Total Vaccinations" = round(sum(new_cases, na.rm = TRUE)),
+            "Vaccinations in a month" = spk_chr(new_vaccinations, type ="line")) %>%
    arrange(-year, -month) %>% 
   rename(Year = year, Month = month)%>%  
   datatable(rownames =TRUE, escape = FALSE, 
             caption = htmltools::tags$caption( style = 'caption-side: top; 
                                                 text-align: center;  color:black; font-size:120% ;','COVID-19 Cases and Deaths'),
-            options=list(pageLength = 20)) %>%
+            options=list(pageLength = 10)) %>%
   spk_add_deps() %>%
  formatStyle(
   "Total Cases",
@@ -353,57 +435,141 @@ country %>%
 
 
 
-A comparision has been made with the top 5 worst hit countries by the pandemic. The death to positive cases ratio is the metric of ranking. The ranking of Iran is highlighted in red. The interesting fact here is that the worst month in terms of this ratio was November, 2020 and it ranked second among other countries. In conclusion, we see that the the number of deaths have a positive association with the number of cases reported.
+```{r , eval=FALSE}
+country_vaccination %>% 
+  pivot_longer(cols=c(new_cases),
+               names_to = "variable",
+               values_to = "number") %>% 
+  unite("yearcol",c(month,year),sep="_") %>% 
+  group_by(variable,yearcol) %>% 
+  summarise("MonthlyData" = sum(number, na.rm = TRUE)) %>% 
+  ggplot(aes(variable,yearcol , fill = MonthlyData)) +
+  geom_tile(color= "white",size=0.1) + 
+  theme_classic() +
+  scale_fill_viridis(name="",option ="C")+
+  coord_flip()+
+  theme(axis.line=element_blank(),
+        axis.ticks=element_blank(),
+        axis.text.x = element_text(angle = 45),
+        legend.position="bottom",
+          panel.background=element_blank(),
+        panel.border=element_blank(),panel.grid.major=element_blank(),
+          panel.grid.minor=element_blank(),
+        plot.background=element_blank())+
+      labs(y = "Month_Year",
+         x = "",
+         title = "Monthly Figures",
+         caption = "Figure ",
+         subtitle = "")
+
+country_vaccination %>% 
+  pivot_longer(cols=c(new_deaths),
+               names_to = "variable",
+               values_to = "number") %>% 
+  unite("yearcol",c(month,year),sep="_") %>% 
+  group_by(variable,yearcol) %>% 
+  summarise("MonthlyData" = sum(number, na.rm = TRUE)) %>% 
+  ggplot(aes(variable,yearcol , fill = MonthlyData)) +
+  geom_tile(color= "white",size=0.1) + 
+  theme_classic() +
+  scale_fill_viridis(name="",option ="C")+
+  coord_flip()+
+  theme(axis.line=element_blank(),
+        axis.ticks=element_blank(),
+        axis.text.x = element_text(angle = 45),
+        legend.position="bottom",
+          panel.background=element_blank(),
+        panel.border=element_blank(),panel.grid.major=element_blank(),
+          panel.grid.minor=element_blank(),
+        plot.background=element_blank())+
+      labs(y = "Month_Year",
+         x = "",
+         title = "Monthly Figures",
+         caption = "Figure ",
+         subtitle = "")
+
+country_vaccination %>% 
+  pivot_longer(cols=c(first_vaccine,second_vaccine),
+               names_to = "variable",
+               values_to = "number") %>% 
+  unite("yearcol",c(month,year),sep="_",remove = FALSE) %>% 
+  arrange(year,month) %>% 
+  group_by(variable,yearcol) %>% 
+  summarise("MonthlyData" = sum(number, na.rm = TRUE)) %>% 
+  ggplot(aes(variable,yearcol, fill = MonthlyData)) +
+  geom_tile(color= "white",size=0.1) + 
+  theme_classic() +
+  scale_fill_viridis(name="",option ="C")+
+  coord_flip()+
+  theme(axis.line=element_blank(),
+        axis.ticks=element_blank(),
+        axis.text.x = element_text(angle = 45),
+        legend.position="bottom",
+          panel.background=element_blank(),
+        panel.border=element_blank(),panel.grid.major=element_blank(),
+          panel.grid.minor=element_blank(),
+        plot.background=element_blank())+
+      labs(y = "Month_Year",
+         x = "",
+         title = "Monthly Figures",
+         caption = "Figure ",
+         subtitle = "")
+```
+
+Now, we analyze the corona virus variants in Turkey. The first and basic visualisation to check the distribution of the variants is a bar plot. The variants are plotted on a bar chart and we find that the delta variant is the most common infection in Turkey. "The Delta variant is a variant of concern that WHO is tracking and monitoring around the world. It's a variant of concern because we know it has increased transmissibility. This has been demonstrated by several countries. And we know that where the Delta variant is identified, it really rapidly takes off and spreads between people more efficiently than even the Alpha variant that was first detected around December, January 2021. As of today, the Delta variant has been reported in 96 countries and we expect that the Delta variant will continue to spread." ~ Dr Maria Van Kerkhove
 
 
 ```{r}
-coviddata <- coviddata %>% mutate(year=year(date),
+variant_country <- variant_country %>% mutate(
+  num_sequences=ifelse(is.na(num_sequences),0,num_sequences),
+  perc_sequences=ifelse(is.na(perc_sequences),0,perc_sequences))%>% 
+  mutate(year=year(date),
          month=month(date),
          day=day(date)) 
 
-monthlyreport <- coviddata %>% 
-  group_by(location,month,year) %>% 
-  summarise("MonthlyCases" = sum(new_cases, na.rm = TRUE),
-            "MonthlyDeaths" = sum(new_deaths, na.rm = TRUE),
-                                    ratio=MonthlyDeaths/MonthlyCases) %>% 
-  ungroup() %>% 
-  group_by(location) %>% 
-  slice_max(order_by=MonthlyCases,n=5) %>% 
-  filter(location %in% c("United States", "India", "Brazil","United Kingdom","Turkey")) %>%
-  arrange(desc(ratio))%>%  
-  datatable(rownames =TRUE, escape = FALSE, 
-            caption = htmltools::tags$caption( style = 'caption-side: top; 
-                                                text-align: center;  color:black; font-size:120% ;','COVID-19 Deaths'),
-            options=list(pageLength = 5)) %>% 
-  spk_add_deps() %>%
- formatStyle(
-  "location",
-  target = 'row',
-  backgroundColor = styleRow(rows=c(2,9,14,15,20), values=c('red','red','red','red','red')))
- monthlyreport
+variant_summary <- variant_country %>% group_by(variant) %>% 
+  summarise(variant_sum=sum(num_sequences))
+
+variant_summary %>% filter(variant_sum>100) %>% ggplot(aes(x=reorder(variant,variant_sum),y=variant_sum)) + geom_col() +
+  coord_flip() +
+  theme_bw() +
+  labs(y="Sum of Variants",title = "Variant Distribution",
+         caption = "")  + 
+        theme_classic()+
+        labs(y = "Number of Cases",
+         x = "Month",
+         ) +
+  theme(axis.title.y = element_blank(),
+        axis.text.y = element_text(size = 11), 
+        legend.position = "bottom")
+ 
   
 ```
 
-```{r}
-coviddata %>% 
-  group_by(location,month,year) %>% 
-  summarise("MonthlyCases" = sum(new_cases, na.rm = TRUE),
-            "MonthlyDeaths" = sum(new_deaths, na.rm = TRUE),
-                                    ratio=MonthlyDeaths/MonthlyCases) %>% 
-  ungroup() %>% 
-  ggplot() +
-  geom_point(aes(x=MonthlyCases,y=MonthlyDeaths)) +
-  geom_point(data=
-              coviddata %>% 
-  group_by(location,month,year) %>% 
-  summarise("MonthlyCases" = sum(new_cases, na.rm = TRUE),
-            "MonthlyDeaths" = sum(new_deaths, na.rm = TRUE),
-                                    ratio=MonthlyDeaths/MonthlyCases) %>%  
-    filter(location %in% c("Turkey")),
-             aes(x=MonthlyCases,y=MonthlyDeaths),color="red") +
-  labs(title = "Cases vs Deaths")
 
+Now, the first occurrence of the delta strain is identified and its relation with the increase in the number of cases will be discussed. The spread of the delta variant is super fast and it is proved by data in the plot below. The first occurence the delta variant in Turkey was in May 2021. The spread of it is so fast that, in August almost all of the cases are attributed to the delta variant. 
+
+
+```{r}
+variant_country_delta <- variant_country %>% filter(variant=="Delta") %>%
+  mutate(month= month(date,label=TRUE,abbr = TRUE)) %>% 
+  pivot_longer(cols=c(num_sequences,num_sequences_total),
+               names_to = "sequence",
+               values_to = "number") %>% 
+  mutate(sequence=ifelse(sequence=="num_sequences","delta","total"))
+
+variant_country_delta %>% ggplot(aes(x=month,y=number,fill=sequence)) + geom_col(position="dodge")+
+        theme_classic()+
+        labs(y = "Number of Cases",
+         x = "Month",
+         title = "Delta Variant Cases",
+         caption = "Delta Variant Cases") +
+  theme(axis.title.y = element_text(size = 11),
+        axis.text.y = element_text(size = 11), 
+        legend.position = "bottom")
 ```
+
+Thus in all, I would say that the vaccination rate causes the infection rate to slow down. However, the neglected attitude of people and the hesitancy to take the vaccine has caused this pandemic to disturb normal life for longer times. The restrictions and other regulations have most definitely allowed us this time to face this pandemic in a stringer manner to avoid more deaths. Therefore, please get vaccinated and stay safe.
 
 
 
